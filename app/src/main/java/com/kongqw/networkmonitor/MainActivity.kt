@@ -23,11 +23,11 @@ class MainActivity : AppCompatActivity() {
         NetworkMonitorManager.getInstance().register(this)
 
         btn_action_1?.setOnClickListener {
-            val hasNetworkCapability = NetworkStateUtils.hasNetworkCapability(applicationContext)
+            val hasNetworkCapability: Boolean = NetworkStateUtils.hasNetworkCapability(applicationContext)
             Toast.makeText(applicationContext, if (hasNetworkCapability) "当前有网络" else "当前无网络", Toast.LENGTH_SHORT).show()
         }
         btn_action_2?.setOnClickListener {
-            val networkState = NetworkStateUtils.getNetworkState(applicationContext)
+            val networkState: NetworkState = NetworkStateUtils.getNetworkState(applicationContext)
             Toast.makeText(applicationContext, "当前网络类型：$networkState", Toast.LENGTH_SHORT).show()
         }
     }

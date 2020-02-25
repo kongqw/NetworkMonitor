@@ -37,15 +37,13 @@ dependencies {
 NetworkMonitorManager.getInstance().init(this)
 ```
 
-### 注册
+### 注册与反注册
 
-在需要监听网络状态的页面进行注册
+在需要监听网络状态的页面进行注册与反注册
 
 ``` kotlin
 NetworkMonitorManager.getInstance().register(this)
 ```
-
-### 反注册
 
 ``` kotlin
 NetworkMonitorManager.getInstance().unregister(this)
@@ -91,6 +89,18 @@ fun onNetWorkStateChange1(networkState: NetworkState) {
 fun onNetWorkStateChange2(networkState: NetworkState) {
     // TODO 连接上WIFI或蜂窝网络的时候回调
 }
+```
+
+### 判断当前是否有网络连接
+
+``` kotlin
+val hasNetworkCapability: Boolean = NetworkStateUtils.hasNetworkCapability(applicationContext)
+```
+
+### 获取当前的网络状态
+
+``` kotlin
+val networkState: NetworkState = NetworkStateUtils.getNetworkState(applicationContext)
 ```
 
 ## 混淆
