@@ -1,0 +1,2 @@
+include ':app', ':monitor'
+rootProject.name='NetworkMonitor'
