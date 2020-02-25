@@ -92,3 +92,12 @@ fun onNetWorkStateChange2(networkState: NetworkState) {
     // TODO 连接上WIFI或蜂窝网络的时候回调
 }
 ```
+
+## 混淆
+```
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @com.kongqw.network.monitor.interfaces.NetworkMonitor <methods>;
+}
+-keep class com.kongqw.network.monitor.** { *; }
+```
