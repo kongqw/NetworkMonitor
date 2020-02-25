@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @NetworkMonitor(monitorFilter = [NetworkState.WIFI])
+    @NetworkMonitor(monitorFilter = [NetworkState.WIFI, NetworkState.CELLULAR])
     fun onNetWorkStateChangeWIFI(networkState: NetworkState) {
         Log.i(TAG, "onNetWorkStateChangeWIFI  networkState = $networkState")
     }
