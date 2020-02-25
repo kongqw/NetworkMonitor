@@ -16,7 +16,7 @@ import com.kongqw.network.monitor.util.AnnotationUtils
 import com.kongqw.network.monitor.util.NetworkStateUtils
 import java.util.*
 
-class NetworkMonitorManager private constructor() : ConnectivityManager.NetworkCallback() {
+class NetworkMonitorManager private constructor() {
 
     companion object {
 
@@ -33,6 +33,7 @@ class NetworkMonitorManager private constructor() : ConnectivityManager.NetworkC
 
     private var mApplication: Application? = null
     private var mNetworkBroadcastReceiver = NetworkBroadcastReceiver()
+    private var mNetworkCallback = NetworkCallback()
     private var netWorkStateChangedMethodMap: HashMap<Any, ArrayList<NetworkStateReceiverMethod>> = HashMap()
     private val mUiHandler = Handler(Looper.getMainLooper())
 
@@ -46,10 +47,10 @@ class NetworkMonitorManager private constructor() : ConnectivityManager.NetworkC
 
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
-                connectivityManager?.registerDefaultNetworkCallback(this)
+                connectivityManager?.registerDefaultNetworkCallback(mNetworkCallback)
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
-                connectivityManager?.registerNetworkCallback(NetworkRequest.Builder().build(), this)
+                connectivityManager?.registerNetworkCallback(NetworkRequest.Builder().build(), mNetworkCallback)
             }
             else -> {
                 val intentFilter = IntentFilter().apply { addAction(ANDROID_NET_CHANGE_ACTION) }
@@ -66,19 +67,20 @@ class NetworkMonitorManager private constructor() : ConnectivityManager.NetworkC
         any?.apply { netWorkStateChangedMethodMap.remove(this) }
     }
 
-    override fun onAvailable(network: Network) {
-        super.onAvailable(network)
-        postNetworkState(NetworkStateUtils.getNetworkState(mApplication?.applicationContext))
+    internal inner class NetworkCallback : ConnectivityManager.NetworkCallback() {
+
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            postNetworkState(NetworkStateUtils.getNetworkState(mApplication?.applicationContext))
+        }
+
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            postNetworkState(NetworkState.NONE)
+        }
     }
 
-    override fun onLost(network: Network) {
-        super.onLost(network)
-        postNetworkState(NetworkState.NONE)
-        // postNetworkState(NetworkStateUtils.getNetworkState(mApplication?.applicationContext))
-    }
-
-
-    inner class NetworkBroadcastReceiver : BroadcastReceiver() {
+    internal inner class NetworkBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 ANDROID_NET_CHANGE_ACTION -> {

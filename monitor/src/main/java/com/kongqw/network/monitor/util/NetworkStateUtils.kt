@@ -30,6 +30,9 @@ object NetworkStateUtils {
         return false
     }
 
+    /**
+     * 获取当前网络状态
+     */
     fun getNetworkState(context: Context?): NetworkState {
         try {
             val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager?
@@ -56,7 +59,7 @@ object NetworkStateUtils {
         return NetworkState.NONE
     }
 
-    fun getNetworkState(context: Context?, network: Network?): NetworkState {
+    internal fun getNetworkState(context: Context?, network: Network?): NetworkState {
         try {
             val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
