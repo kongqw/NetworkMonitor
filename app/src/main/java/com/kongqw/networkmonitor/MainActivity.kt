@@ -55,19 +55,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    @NetworkMonitor(monitorFilter = [NetworkState.WIFI, NetworkState.CELLULAR])
-    fun onNetWorkStateChangeWIFI(networkState: NetworkState) {
-        Log.i(TAG, "onNetWorkStateChangeWIFI  networkState = $networkState")
-    }
-
-    @NetworkMonitor(monitorFilter = [NetworkState.CELLULAR])
-    fun onNetWorkStateChangeCellular(networkState: NetworkState) {
-        Log.i(TAG, "onNetWorkStateChangeCellular  networkState = $networkState")
-    }
-
-    @NetworkMonitor(monitorFilter = [NetworkState.NONE])
-    fun onNetWorkStateChangeNONE(networkState: NetworkState) {
-        Log.i(TAG, "onNetWorkStateChangeNONE  networkState = $networkState")
-    }
+//
+//    @NetworkMonitor(monitorFilter = [NetworkState.WIFI, NetworkState.CELLULAR])
+//    fun onNetWorkStateChangeWIFI(networkState: NetworkState) {
+//        Log.i(TAG, "onNetWorkStateChangeWIFI  networkState = $networkState")
+//    }
+//
+//    @NetworkMonitor(monitorFilter = [NetworkState.CELLULAR])
+//    fun onNetWorkStateChangeCellular(networkState: NetworkState) {
+//        Log.i(TAG, "onNetWorkStateChangeCellular  networkState = $networkState")
+//    }
+//
+//    @NetworkMonitor(monitorFilter = [NetworkState.NONE])
+//    fun onNetWorkStateChangeNONE(networkState: NetworkState) {
+//        Log.i(TAG, "onNetWorkStateChangeNONE  networkState = $networkState")
+//    }
 }

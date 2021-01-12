@@ -22,6 +22,9 @@ class NetworkMonitorManager private constructor() {
 
         private const val ANDROID_NET_CHANGE_ACTION = "android.net.conn.CONNECTIVITY_CHANGE"
 
+        // 默认网络防抖时间
+        private const val DEFAULT_JITTER_TIME: Long = 1_500
+
         @JvmStatic
         private var INSTANCE: NetworkMonitorManager? = null
 
@@ -32,13 +35,28 @@ class NetworkMonitorManager private constructor() {
     }
 
     private var mApplication: Application? = null
+    private var mJitterTime: Long = DEFAULT_JITTER_TIME
     private var mNetworkBroadcastReceiver = NetworkBroadcastReceiver()
     private var mNetworkCallback = NetworkCallback()
     private var netWorkStateChangedMethodMap: HashMap<Any, ArrayList<NetworkStateReceiverMethod>> = HashMap()
     private val mUiHandler = Handler(Looper.getMainLooper())
 
-    fun init(application: Application) {
+    private var mLastNetworkState: NetworkState? = null
+    private var mRunnable: Runnable? = null
+
+    /**
+     * 初始化
+     * @param application 上下文
+     * @param jitterTime 设置抖动时间
+     */
+    fun init(application: Application, jitterTime: Long = DEFAULT_JITTER_TIME) {
         mApplication = application
+        mJitterTime = jitterTime.let {
+            if (it < 0) {
+                return@let 0
+            }
+            return@let it
+        }
         initMonitor(application)
     }
 
@@ -90,11 +108,39 @@ class NetworkMonitorManager private constructor() {
         }
     }
 
+
     private fun postNetworkState(networkState: NetworkState) {
-        for ((_, methods) in netWorkStateChangedMethodMap) {
-            methods.forEach { networkStateReceiverMethod ->
-                if (true == networkStateReceiverMethod.monitorFilter?.contains(networkState)) {
-                    mUiHandler.post { networkStateReceiverMethod.method?.invoke(networkStateReceiverMethod.any, networkState) }
+        // Log.i("NetworkMonitorManager", "postNetworkState($networkState)")
+        if (mLastNetworkState == networkState) {
+            // Log.i("NetworkMonitorManager", "已经回调过该状态，不再多次回调")
+            return
+        }
+
+        mRunnable?.also { mUiHandler.removeCallbacks(it) }
+
+
+        mRunnable = Runnable {
+            for ((_, methods) in netWorkStateChangedMethodMap) {
+
+                methods.forEach { networkStateReceiverMethod ->
+                    if (true == networkStateReceiverMethod.monitorFilter?.contains(networkState)) {
+                        networkStateReceiverMethod.method?.invoke(networkStateReceiverMethod.any, networkState)
+                        // 记录最后一次回调的网络状态
+                        mLastNetworkState = networkState
+                    }
+                }
+            }
+        }
+
+        when (networkState) {
+            NetworkState.NONE -> {
+                mRunnable?.also {
+                    mUiHandler.postDelayed(it, mJitterTime)
+                }
+            }
+            else -> {
+                mRunnable?.also {
+                    mUiHandler.postDelayed(it, mJitterTime)
                 }
             }
         }

@@ -24,7 +24,7 @@ Step 2. Add the dependency
 
 ``` glide
 dependencies {
-        implementation 'com.github.kongqw:NetworkMonitor:1.0.1'
+        implementation 'com.github.kongqw:NetworkMonitor:1.1.0'
 }
 ```
 
@@ -35,6 +35,17 @@ dependencies {
 
 ``` kotlin
 NetworkMonitorManager.getInstance().init(this)
+```
+
+或
+
+``` kotlin
+/**
+ * 初始化
+ * @param application 上下文
+ * @param jitterTime 设置抖动时间(即多久之后网络状态没有发生变化，才回调网络状态，单位：毫秒，默认1500毫秒)
+ */
+NetworkMonitorManager.getInstance().init(this, 1_500)
 ```
 
 ### 注册与反注册
