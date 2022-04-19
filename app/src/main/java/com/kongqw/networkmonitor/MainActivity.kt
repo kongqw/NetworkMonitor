@@ -1,16 +1,12 @@
 package com.kongqw.networkmonitor
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import com.kongqw.network.monitor.NetworkMonitorManager
 import com.kongqw.network.monitor.enums.NetworkState
-import com.kongqw.network.monitor.interfaces.NetworkMonitor
 import com.kongqw.network.monitor.util.NetworkStateUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -19,8 +15,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        NetworkMonitorManager.getInstance().register(this)
 
         btn_action_1?.setOnClickListener {
             val hasNetworkCapability: Boolean = NetworkStateUtils.hasNetworkCapability(applicationContext)
@@ -33,28 +27,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        NetworkMonitorManager.getInstance().unregister(this)
         super.onDestroy()
     }
-
-    @NetworkMonitor
-    fun onNetWorkStateChange(networkState: NetworkState) {
-        Log.i(TAG, "onNetWorkStateChange  networkState = $networkState")
-        when (networkState) {
-            NetworkState.NONE -> {
-                Toast.makeText(applicationContext, "暂无网络", Toast.LENGTH_SHORT).show()
-                tv_network_state?.text = "当前网络类型：暂无网络"
-            }
-            NetworkState.WIFI -> {
-                Toast.makeText(applicationContext, "WIFI网络", Toast.LENGTH_SHORT).show()
-                tv_network_state?.text = "当前网络类型：WIFI网络"
-            }
-            NetworkState.CELLULAR -> {
-                Toast.makeText(applicationContext, "蜂窝网络", Toast.LENGTH_SHORT).show()
-                tv_network_state?.text = "当前网络类型：蜂窝网络"
-            }
-        }
-    }
+//
+//    @NetworkMonitor
+//    fun onNetWorkStateChange(networkState: NetworkState) {
+//        Log.i(TAG, "onNetWorkStateChange  networkState = $networkState")
+//        when (networkState) {
+//            NetworkState.NONE -> {
+//                Toast.makeText(applicationContext, "暂无网络", Toast.LENGTH_SHORT).show()
+//                tv_network_state?.text = "当前网络类型：暂无网络"
+//            }
+//            NetworkState.WIFI -> {
+//                Toast.makeText(applicationContext, "WIFI网络", Toast.LENGTH_SHORT).show()
+//                tv_network_state?.text = "当前网络类型：WIFI网络"
+//            }
+//            NetworkState.CELLULAR -> {
+//                Toast.makeText(applicationContext, "蜂窝网络", Toast.LENGTH_SHORT).show()
+//                tv_network_state?.text = "当前网络类型：蜂窝网络"
+//            }
+//        }
+//    }
 //
 //    @NetworkMonitor(monitorFilter = [NetworkState.WIFI, NetworkState.CELLULAR])
 //    fun onNetWorkStateChangeWIFI(networkState: NetworkState) {

@@ -24,7 +24,7 @@ Step 2. Add the dependency
 
 ``` glide
 dependencies {
-        implementation 'com.github.kongqw:NetworkMonitor:1.1.0'
+        implementation 'com.github.kongqw:NetworkMonitor:1.2.0'
 }
 ```
 
